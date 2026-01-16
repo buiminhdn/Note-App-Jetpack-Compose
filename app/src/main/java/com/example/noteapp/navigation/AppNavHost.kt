@@ -21,21 +21,19 @@ fun AppNavHost() {
         }
 
         composable(
-            route = NavScreen.DetailScreen.route,
+            route = "${NavScreen.DetailScreen.route}?noteId={noteId}",
             arguments = listOf(
                 navArgument(name = "noteId") {
                     type = NavType.IntType
                     defaultValue = -1
-                },
-
-                navArgument(name = "noteColor") {
-                    type = NavType.IntType
-                    defaultValue = -1
-                },
+                }
             )
-        ) {
-            val color = it.arguments?.getInt("noteColor") ?: -1
-            DetailScreen(navController = navController, noteColor = color)
+        ) { backStackEntry ->
+            val noteId = backStackEntry.arguments?.getInt("noteId")
+            DetailScreen(
+                navController = navController,
+                noteId = if (noteId == -1) null else noteId
+            )
         }
 
     }

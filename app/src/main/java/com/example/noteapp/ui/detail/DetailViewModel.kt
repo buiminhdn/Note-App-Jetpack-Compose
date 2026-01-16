@@ -25,38 +25,74 @@ class DetailViewModel @Inject constructor(
             is DetailIntent.LoadNote -> loadNote(intent.id)
 
             is DetailIntent.ChangeTitle ->
-                updateNote { copy(title = intent.text) }
+                _state.update { it.copy(title = intent.text) }
 
             is DetailIntent.ChangeContent ->
-                updateNote { copy(content = intent.text) }
+                _state.update { it.copy(content = intent.text) }
 
             is DetailIntent.ChangeBackgroundColor ->
-                updateNote { copy(backgroundColor = intent.backgroundColor) }
+                _state.update { it.copy(backgroundColor = intent.backgroundColor) }
 
             DetailIntent.Save -> save()
-        }
-    }
 
-    private fun loadNote(id: Int) = viewModelScope.launch {
-        if (id != 0) {
-            _state.update {
-                it.copy(note = repo.getNoteById(id))
+            DetailIntent.ClearErrorMessage -> {
+                _state.update { it.copy(errorMessage = null) }
+            }
+
+            DetailIntent.ConfirmDelete -> {
+                deleteNote()
             }
         }
     }
 
-    private fun updateNote(block: Note.() -> Note) {
-        _state.update { currentState ->
-            val updatedNote = currentState.note?.block()
-            currentState.copy(note = updatedNote)
+    private fun loadNote(id: Int) = viewModelScope.launch {
+        val note = repo.getNoteById(id)
+        if (note == null) {
+            _state.update { it.copy(isFinished = true) }
+            return@launch
+        }
+
+        _state.update {
+            it.copy(
+                id = note.id,
+                title = note.title,
+                content = note.content,
+                backgroundColor = note.backgroundColor
+            )
+        }
+    }
+
+    private fun deleteNote() = viewModelScope.launch {
+        _state.value.id?.let { noteId ->
+            repo.deleteNote(noteId)
+            _state.update { it.copy(isFinished = true) }
         }
     }
 
     private fun save() = viewModelScope.launch {
-        val note = _state.value.note ?: return@launch
+        if (_state.value.title.isBlank() || _state.value.content.isBlank()) {
+            _state.update {
+                it.copy(errorMessage = "Vui lòng nhập tiêu đề và nội dung")
+            }
+            return@launch
+        }
 
-        _state.update { it.copy(isSaving = true) }
-        repo.insertNote(note)
-        _state.update { it.copy(isSaving = false, isFinished = true) }
+        val noteToSave = if (_state.value.id != null) {
+            Note(
+                id = _state.value.id!!,
+                title = _state.value.title,
+                content = _state.value.content,
+                backgroundColor = _state.value.backgroundColor
+            )
+        } else {
+            Note(
+                title = _state.value.title,
+                content = _state.value.content,
+                backgroundColor = _state.value.backgroundColor
+            )
+        }
+
+        repo.insertNote(noteToSave)
+        _state.update { it.copy(isFinished = true) }
     }
 }

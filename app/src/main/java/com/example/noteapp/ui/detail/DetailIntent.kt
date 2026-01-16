@@ -8,4 +8,6 @@ sealed class DetailIntent {
     data class ChangeContent(val text: String) : DetailIntent()
     data class ChangeBackgroundColor(val backgroundColor: NoteColor) : DetailIntent()
     object Save : DetailIntent()
+    object ClearErrorMessage : DetailIntent()
+    object ConfirmDelete : DetailIntent()
 }

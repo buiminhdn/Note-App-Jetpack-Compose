@@ -4,6 +4,7 @@
     <string name="search_notes">Search notes</string>
     <string name="author_info">Author info</string>
     <string name="create_your_first_note">Create your first note!</string>
-    <string name="title">title</string>
-    <string name="type_something">type_something</string>
+    <string name="title">Title</string>
+    <string name="type_something">Type something...</string>
+    <string name="delete_note">delete note</string>
 </resources>

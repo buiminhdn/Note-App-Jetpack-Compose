@@ -14,8 +14,20 @@ val Typography = Typography(
     ),
     headlineSmall = TextStyle(
         fontFamily = Nunito,
-        fontWeight = FontWeight.Light,
+        fontWeight = FontWeight.Normal,
         fontSize = 20.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Normal,
+        fontSize = 34.sp,
+        color = placeHolderColor
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
+        color = placeHolderColor
     ),
     bodyLarge = TextStyle(
         fontFamily = Nunito,

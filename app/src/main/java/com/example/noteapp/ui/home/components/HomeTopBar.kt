@@ -20,7 +20,7 @@ import com.example.noteapp.ui.theme.NoteAppTheme
 @Composable
 fun HomeTopBar(
     onSearchClick: () -> Unit,
-    onFilterClick: () -> Unit
+    onAuthorClick: () -> Unit
 ) {
     TopAppBar(
         modifier = Modifier.padding(0.dp, 8.dp),
@@ -38,7 +38,7 @@ fun HomeTopBar(
             )
             Spacer(modifier = Modifier.size(12.dp))
             CustomIconButton(
-                onClick = onFilterClick,
+                onClick = onAuthorClick,
                 iconResId = R.drawable.ic_info,
                 contentDescription = stringResource(id = R.string.author_info)
             )
@@ -53,7 +53,7 @@ fun HomeTopBarPreview() {
     NoteAppTheme {
         HomeTopBar(
             onSearchClick = {},
-            onFilterClick = {}
+            onAuthorClick = {}
         )
     }
 }

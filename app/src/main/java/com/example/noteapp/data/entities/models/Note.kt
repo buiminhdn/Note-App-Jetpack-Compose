@@ -10,6 +10,6 @@ data class Note(
     val id: Int = 0,
     val title: String,
     val content: String,
-    val updatedAt: Long,
+    val updatedAt: Long = System.currentTimeMillis(),
     val backgroundColor: NoteColor
 )

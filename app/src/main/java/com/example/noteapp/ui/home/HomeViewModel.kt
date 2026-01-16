@@ -3,11 +3,14 @@ package com.example.noteapp.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.noteapp.data.repositories.note.NoteRepository
+import com.example.noteapp.navigation.NavScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +23,9 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state
 
+    private val _navigationEvent = Channel<String>()
+    val navigationEvent = _navigationEvent.receiveAsFlow()
+
     init {
         loadNotes()
     }
@@ -28,7 +34,9 @@ class HomeViewModel @Inject constructor(
         when (intent) {
             is HomeIntent.DeleteNote -> deleteNote(intent.id)
             is HomeIntent.ClickNote -> {
-                // emit navigation event
+                viewModelScope.launch {
+                    _navigationEvent.send("${NavScreen.DetailScreen.route}?noteId=${intent.id}")
+                }
             }
         }
     }
